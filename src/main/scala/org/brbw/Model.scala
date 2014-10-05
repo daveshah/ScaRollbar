@@ -1,5 +1,11 @@
 package org.brbw
 
+case class RollbarData(accessToken: String, data: Data)
+
+case class Data(environment: String, body: Body)
+
+case class Body(trace: Trace)
+
 case class Trace(t: Throwable) {
     val frames = framesFrom(t)
 
