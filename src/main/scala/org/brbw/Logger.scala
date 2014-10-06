@@ -1,13 +1,15 @@
 package org.brbw
 
-class Logger(apiKey: String,environment: String) {
+import akka.actor._
+
+case class Logger(apiKey: String,environment: String) {
 
     def log(throwable: Throwable) : Throwable = {
-        RollbarPoster.post(RollbarData(apiKey,environment,throwable))
+        val system = ActorSystem("logging-system")
+        val poster = system.actorOf(Props(new RollbarPoster),"poster")
+        poster ! RollbarData(apiKey,environment,throwable)
         throwable
     }
+    
 }
 
-object Logger {
-    def apply(key: String, environment: String): Logger =  new Logger(key, environment)
-}
