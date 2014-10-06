@@ -8,23 +8,22 @@ import scalaj.http.Http
 case class Logger(apiKey: String, environment: String) {
 
     def log(throwable: Throwable): Throwable = {
-
-        val pool = Executors.newCachedThreadPool()
-        implicit val context = ExecutionContext.fromExecutor(pool)
-
-        Future {
-            log(RollbarData(apiKey, environment, throwable))
-        }
-
+        log(RollbarData(apiKey, environment, throwable))
         throwable
     }
 
-    private def log(data: RollbarData): Int = {
-        val json = data.asJsonString
-        Http.postData("https://api.rollbar.com/api/1/item/", json)
-            .header("content-type", "appliction/json")
-            .responseCode
+    def log(message: String): Unit = {
+        log(RollbarData(apiKey, environment, message))
     }
 
+    private def log(data: RollbarData) = {
+        val pool = Executors.newCachedThreadPool()
+        implicit val context = ExecutionContext.fromExecutor(pool)
+        Future {
+            Http.postData("https://api.rollbar.com/api/1/item/", data.asJsonString)
+                .header("content-type", "appliction/json")
+                .responseCode
+        }
+    }
 }
 

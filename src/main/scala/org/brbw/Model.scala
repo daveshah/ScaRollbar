@@ -7,7 +7,7 @@ case class RollbarData(accessToken: String,environment: String, throwable: Throw
         if(message == null)  Body(Trace(throwable)) else Body(message)
     )
 
-    def asJsonString : String = toJson.toString()
+    def asJsonString : String = toJson.toString
 
     def toJson = JSONObject(Map("access_token" -> accessToken, "data" -> data.toJson))
 }
@@ -22,7 +22,7 @@ case class Data(environment: String, body: Body) {
 }
 
 case class Body(trace: Trace,message: String) {
-    def toJson =  if(message == null) JSONObject(Map("trace" -> trace.toJson)) else JSONObject(Map("message" -> Map("body" -> message)))
+    def toJson =  if(message == null) JSONObject(Map("trace" -> trace.toJson)) else JSONObject(Map("message" -> JSONObject(Map("body" -> message))))
 }
 
 object Body {
