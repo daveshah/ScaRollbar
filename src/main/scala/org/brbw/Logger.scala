@@ -21,7 +21,7 @@ case class Logger(apiKey: String, environment: String) {
         implicit val context = ExecutionContext.fromExecutor(pool)
         val f = Future {
             Http.postData("https://api.rollbar.com/api/1/item/", data.asJsonString)
-                .header("content-type", "appliction/json")
+                .header("content-type", "application/json")
                 .responseCode
         }
         f onSuccess {
