@@ -16,13 +16,19 @@ case class Logger(apiKey: String, environment: String) {
         log(RollbarData(apiKey, environment, message))
     }
 
-    private def log(data: RollbarData) = {
+    private def log(data: RollbarData) : Unit = {
         val pool = Executors.newCachedThreadPool()
         implicit val context = ExecutionContext.fromExecutor(pool)
-        Future {
+        val f = Future {
             Http.postData("https://api.rollbar.com/api/1/item/", data.asJsonString)
                 .header("content-type", "appliction/json")
                 .responseCode
+        }
+        f onSuccess {
+            case res: Int => pool.shutdown()
+        }
+        f onFailure {
+            case _  => pool.shutdown()
         }
     }
 }
