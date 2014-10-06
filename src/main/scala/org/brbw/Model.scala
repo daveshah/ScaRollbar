@@ -16,7 +16,7 @@ case class Data(environment: String, body: Body) {
 }
 
 case class Body(trace: Trace) {
-    def toJson =  JSONObject(Map("body" -> trace.toJson))
+    def toJson =  JSONObject(Map("trace" -> trace.toJson))
 }
 
 case class Trace(t: Throwable) {
