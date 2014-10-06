@@ -1,22 +1,33 @@
 package org.brbw
 import scala.util.parsing.json._
 
-case class RollbarData(accessToken: String,environment: String, throwable: Throwable) {
+case class RollbarData(accessToken: String,environment: String, throwable: Throwable, message: String) {
 
-    private val data = Data(environment,Body(Trace(throwable)))
+    private val data = Data(environment,
+        if(message == null)  Body(Trace(throwable)) else Body(message)
+    )
 
     def asJsonString : String = toJson.toString()
 
     def toJson = JSONObject(Map("access_token" -> accessToken, "data" -> data.toJson))
+}
 
+object RollbarData {
+    def apply(accessToken: String,environment: String, message: String) : RollbarData = new RollbarData(accessToken,environment,null,message)
+    def apply(accessToken: String,environment: String, throwable: Throwable) : RollbarData = new RollbarData(accessToken,environment,throwable,null)
 }
 
 case class Data(environment: String, body: Body) {
     def toJson = JSONObject(Map("environment" -> environment, "body" -> body.toJson))
 }
 
-case class Body(trace: Trace) {
-    def toJson =  JSONObject(Map("trace" -> trace.toJson))
+case class Body(trace: Trace,message: String) {
+    def toJson =  if(message == null) JSONObject(Map("trace" -> trace.toJson)) else JSONObject(Map("message" -> Map("body" -> message)))
+}
+
+object Body {
+    def apply(trace: Trace) = new Body(trace,null)
+    def apply(message: String) = new Body(null,message)
 }
 
 case class Trace(t: Throwable) {
