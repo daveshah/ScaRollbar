@@ -1,8 +1,12 @@
 name := "scarollbar"
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.2"
+
+artifactName := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+    artifact.name + "-" + module.revision + "." + artifact.extension
+}
 
 libraryDependencies ++= Seq(
     "org.scalaj" %% "scalaj-http" % "0.3.16",
