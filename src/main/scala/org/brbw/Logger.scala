@@ -1,13 +1,11 @@
 package org.brbw
 
-class Logger(apiKey: String,environemt: String) {
+class Logger(apiKey: String,environment: String) {
 
-    def log(message: String): Unit = {
-        
-
+    def log(throwable: Throwable) : Throwable = {
+        RollbarPoster.post(RollbarData(apiKey,environment,throwable))
+        throwable
     }
-
-
 }
 
 object Logger {

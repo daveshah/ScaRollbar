@@ -1,6 +1,13 @@
 package org.brbw
 
-case class RollbarData(accessToken: String, data: Data)
+case class RollbarData(accessToken: String,environment: String, throwable: Throwable) {
+
+    def asJsonString : String = {
+
+
+        ""
+    }
+}
 
 case class Data(environment: String, body: Body)
 
