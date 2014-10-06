@@ -3,9 +3,9 @@ import scala.util.parsing.json._
 
 case class RollbarData(accessToken: String,environment: String, throwable: Throwable, message: String) {
 
-    private val data = Data(environment,
-        if(message == null)  Body(Trace(throwable)) else Body(message)
-    )
+    private val logLevel = if(message == null) "error" else "info"
+    private val body = if(message == null) Body(Trace(throwable)) else Body(message)
+    private val data = Data(environment,body,logLevel)
 
     def asJsonString : String = toJson.toString
 
@@ -17,8 +17,8 @@ object RollbarData {
     def apply(accessToken: String,environment: String, throwable: Throwable) : RollbarData = new RollbarData(accessToken,environment,throwable,null)
 }
 
-case class Data(environment: String, body: Body) {
-    def toJson = JSONObject(Map("environment" -> environment, "body" -> body.toJson))
+case class Data(environment: String, body: Body, level: String) {
+    def toJson = JSONObject(Map("environment" -> environment, "body" -> body.toJson, "level" -> level))
 }
 
 case class Body(trace: Trace,message: String) {

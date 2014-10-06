@@ -1,4 +1,4 @@
-name := "project name"
+name := "scarollbar"
 
 version := "1.0.0-SNAPSHOT"
 
